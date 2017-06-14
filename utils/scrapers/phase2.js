@@ -9,13 +9,12 @@ const inputFile = './bad-recipies.json'
 const outputFile = './bad-recipies-ingredients-raw.json'
 jsonfile.spaces = 2
 
-
 jsonfile.readFile(inputFile, function(err, body) {
   // console.log(body.recipes[10])
-  scrapeFoodNetworkPage(body.recipes[135].articleLink)
-
+  for (let i = 900; i < 970; i++) {
+    scrapeFoodNetworkPage(body.recipes[i].articleLink)
+  }
 })
-
 
 let scrapeFoodNetworkPage = (page) => {
   console.log(page)
@@ -34,22 +33,24 @@ let scrapeFoodNetworkPage = (page) => {
               selector: ".o-RecipeInfo.o-Time .o-RecipeInfo__a-Description"
             },
             yield: {
-              selector: ".o-RecipeInfo.o-Yield .o-RecipeInfo__a-Description"
+              selector: ".o-RecipeInfo.o-Yield .o-RecipeInfo__a-Description",
+              convert: x => x.split('\n')[0]
             },
             experienceRequired: {
-              selector: ".o-RecipeInfo.o-Level .o-RecipeInfo__a-Description"
+              selector: ".o-RecipeInfo.o-Level .o-RecipeInfo__a-Description",
+              convert: x => x.split('\n')[0]
             },
             catagories: {
               listItem: ".parbase.section.tags .o-Capsule__a-Tag.a-Tag",
               data: {}
             },
             directions: {
-              listItem: ".o-Method__m-Body p:not(a),.o-Method__m-Body h4",
-              convert: (x) => {
-                if (x === "Watch how to make this recipe.") {
-                  return ""
-                }
-              }
+              listItem: ".o-Method__m-Body p,.o-Method__m-Body h4",
+              data : {}
+            },
+            ingredients: {
+              listItem: ".o-Ingredients__a-ListItem",
+              data : {}
             }
         }
     }
@@ -57,7 +58,5 @@ let scrapeFoodNetworkPage = (page) => {
     jsonfile.writeFile('./phase2.json', res, {flag: 'a'}, (err) => {
       console.error(err);
     })
-
-    // console.log(res)
   })
 }
