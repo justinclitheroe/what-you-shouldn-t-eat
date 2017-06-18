@@ -2,21 +2,20 @@
 import fs from 'fs';
 import jsonfile from 'jsonfile';
 import scrapeIt from 'scrape-it';
-import request from 'request'
 
 //I/O Files
 const inputFile = './bad-recipies.json'
-const outputFile = './bad-recipies-ingredients-raw.json'
+const outputFile = './phase3.json'
+const forLength = 970
 jsonfile.spaces = 2
 
 jsonfile.readFile(inputFile, function(err, body) {
-  // console.log(body.recipes[10])
-  for (let i = 900; i < 970; i++) {
+  for (let i = 0; i < forLength; i++) {
     scrapeFoodNetworkPage(body.recipes[i].articleLink)
   }
 })
 
-let scrapeFoodNetworkPage = (page) => {
+let scrapeFoodNetworkPage = (page, callback) => {
   console.log(page)
   scrapeIt(page, {
     recipes: {
@@ -25,6 +24,14 @@ let scrapeFoodNetworkPage = (page) => {
             title: {
                 selector: ".o-AssetTitle__a-Headline",
                 // convert: x => x.replace(/\s\s+/, '')
+            },
+            link: {
+              selector: ".o-Attribution__a-Author--Label",
+              convert: x => page
+            },
+            imageLink: {
+              selector: ".o-AssetMultiMedia__a-Image",
+              attr: "src"
             },
             timeToCook: {
               selector: ".o-RecipeInfo__a-Description--Total"
@@ -40,22 +47,22 @@ let scrapeFoodNetworkPage = (page) => {
               selector: ".o-RecipeInfo.o-Level .o-RecipeInfo__a-Description",
               convert: x => x.split('\n')[0]
             },
-            catagories: {
-              listItem: ".parbase.section.tags .o-Capsule__a-Tag.a-Tag",
-              data: {}
+            ingredients: {
+              listItem: ".o-Ingredients__a-ListItem",
+              data : {}
             },
             directions: {
               listItem: ".o-Method__m-Body p,.o-Method__m-Body h4",
               data : {}
             },
-            ingredients: {
-              listItem: ".o-Ingredients__a-ListItem",
-              data : {}
-            }
+            catagories: {
+              listItem: ".parbase.section.tags .o-Capsule__a-Tag.a-Tag",
+              data: {}
+            },
         }
     }
   }, (err, res) => {
-    jsonfile.writeFile('./phase2.json', res, {flag: 'a'}, (err) => {
+    jsonfile.writeFile(outputFile, res, {flag: 'a'}, (err) => {
       console.error(err);
     })
   })
