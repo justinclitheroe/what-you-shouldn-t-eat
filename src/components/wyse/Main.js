@@ -12,15 +12,26 @@ import Meta        from './Meta';
 class Main extends Component {
 
   componentWillMount() {
-    fetch('/recipes/5941f49cc118ae494b851e6c')
+    fetch('/recipes/random')
       .then((res) => {
-        return res.json().then((json) => {
-          this.setState({
-            recipe: json
-          })
+        return res.json()
+      }).then((json) => {
+        this.setState({
+          recipe: json
         })
+      }).then(() => {
+                console.log(this.state.recipe)
       })
-  }
+    }
+    // fetch('/recipes/random')
+    //   .then((res) => {
+    //     return res.json()}.then((json) => {
+    //       this.setState({
+    //         recipe: json
+    //       })
+    //     })
+    //   })
+
 
   render(){
     if(!this.state){
@@ -34,7 +45,7 @@ class Main extends Component {
         />
         <div className="container">
           <div className="columns">
-            <div className="column is-one-third">
+            <div className="column is-5N">
               <div className="card">
                 <GImage
                   imageLink={this.state.recipe.imageLink}
@@ -65,7 +76,7 @@ class Main extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 

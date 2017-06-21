@@ -12,6 +12,18 @@ exports.list_all_recipes = function(req, res) {
   })
 }
 
+exports.get_random = function(req, res) {
+  Recipe.aggregate(
+    { "$sample": {
+      "size": 1
+    }}, function(err, result) {
+      if (err)
+        res.send(err)
+      res.json(result)
+    }
+  )
+}
+
 exports.create_recipe = function(req, res) {
   var new_recipe = new Recipe(req.body);
   new_recipe.save(function(err, task) {

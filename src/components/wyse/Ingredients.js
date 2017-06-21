@@ -4,18 +4,12 @@ class Ingredients extends Component {
   render(){
     console.log(this.props.ingredients)
 
-    // try {
-    //   const ingredients = this.props.ingredients.map((ingredient) => {
-    //     <li class="bed">ingredient</li>
-    //   })
-    // } catch(e) {
-    //   console.error(e);
-    // }
-
     return(
       <div>
-        <ul>
-
+        <ul className='menu'>
+          {/* {this.props.ingredients.map((item) => {
+            return <li className="menu-label">{item}</li>
+          })} */}
         </ul>
       </div>
     );
